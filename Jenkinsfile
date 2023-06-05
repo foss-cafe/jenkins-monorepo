@@ -49,11 +49,34 @@ pipeline {
     }
   }
   stages {
-    stage('test') {
-      steps {
-        echo 'Hello'
-      }
-    }
+        stage('Build Frontend') {
+            when {
+                anyOf {
+                changeset "**/frontend/*.*"
+                }
+            }
+            
+            steps {
+                container("docker") {
+                sh "docker build  -t frontend -f frontend/Dockerfile ."
+                sh "docker images"
+            }
+            }
+        }
 
-  }
+        stage('Build Backend') {
+            when {
+                anyOf {
+                changeset "**/backend/*.*"
+                }
+            }
+            
+            steps {
+                container("docker") {
+                sh "docker build  -t backend -f backend/Dockerfile ."
+                sh "docker images" 
+            }
+            }
+        }
+    }
 }
