@@ -52,7 +52,7 @@ pipeline {
         stage('Build Frontend') {
             when {
                 anyOf {
-                changeset "**/frontend/*.*"
+                changeset "**/frontend/**"
                 }
             }
             
@@ -67,7 +67,7 @@ pipeline {
         stage('Build Backend') {
             when {
                 anyOf {
-                changeset "**/backend/*.*"
+                changeset "**/backend/**"
                 }
             }
             
