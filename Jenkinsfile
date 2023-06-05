@@ -50,16 +50,16 @@ pipeline {
   }
   stages {
 
-        stage("Clone Repo"){
-          container("docker") {
-          git branch: 'main', credentialsId: 'github-pat', poll: false, url: 'https://github.com/foss-cafe/jenkins-monorepo.git'
-          }
-        }
+        stage('Clone Repo') {
+      steps {
+        container("docker") {
+          echo "Branch ${params.BRANCH}"
+          checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-pat', url: 'https://github.com/foss-cafe/jenkins-monorepo.git']]]        }    
+      }
+    }
         stage('Build Frontend') {
             when {
-                anyOf {
-                changeset "**/frontend/**"
-                }
+                changeset "**/frontend/**" 
             }
             
             steps {
@@ -72,9 +72,7 @@ pipeline {
 
         stage('Build Backend') {
             when {
-                anyOf {
                 changeset "**/backend/**"
-                }
             }
             
             steps {
@@ -83,13 +81,6 @@ pipeline {
                 sh "docker images" 
             }
             }
-        }
-
-        post {
-          always {
-            echo 'I will always execute this!'
-            
-          }
         }
     }
 }
