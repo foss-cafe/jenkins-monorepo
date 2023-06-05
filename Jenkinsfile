@@ -49,6 +49,12 @@ pipeline {
     }
   }
   stages {
+
+        stage("Clone Repo"){
+          container("docker") {
+          git branch: 'main', credentialsId: 'github-pat', poll: false, url: 'https://github.com/foss-cafe/jenkins-monorepo.git'
+          }
+        }
         stage('Build Frontend') {
             when {
                 anyOf {
@@ -77,6 +83,13 @@ pipeline {
                 sh "docker images" 
             }
             }
+        }
+
+        post {
+          always {
+            echo 'I will always execute this!'
+            
+          }
         }
     }
 }
